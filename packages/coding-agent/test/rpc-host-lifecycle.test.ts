@@ -7,7 +7,6 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { VERSION } from "../src/config.ts";
-import { processIsLive, processMatchesPidFile, readProcessStartTime } from "../src/modes/app-server/daemon/process.ts";
 import { readHostRegistration } from "../src/modes/rpc/host-daemon-registration.ts";
 import { createHostDaemonPaths, ensureHost, type HostLifecyclePolicyInput } from "../src/modes/rpc/host-ensure.ts";
 import { STOP_WAIT_BUDGET_MS } from "../src/modes/rpc/host-ensure-stop.ts";
@@ -37,6 +36,7 @@ import {
 	sendSocketHandshake,
 	socketSecretPath,
 } from "../src/modes/rpc/socket-transport.ts";
+import { processIsLive, processMatchesPidFile, readProcessStartTime } from "../src/utils/process-identity.ts";
 import { hermeticProviderEnv, MOCK_MODEL, MOCK_PROVIDER, writeRpcModelsJson } from "./helpers/rpc-hermetic.ts";
 import { processAlive, reapProcessesUnder } from "./helpers/spawned-host-reaper.ts";
 
@@ -426,7 +426,11 @@ describe("host watchdog configuration", () => {
 				[HOST_WATCH_PPID_ENV]: "4242",
 				[HOST_SCRATCH_DIR_ENV]: "/tmp/senpi-rpc-host-internal-abc",
 			}),
-		).toEqual({ fd: 3, ppid: 4242, scratchDir: "/tmp/senpi-rpc-host-internal-abc" });
+		).toEqual({
+			fd: process.platform === "win32" ? 3 : undefined,
+			ppid: 4242,
+			scratchDir: "/tmp/senpi-rpc-host-internal-abc",
+		});
 	});
 
 	it("ignores an unavailable watchdog fd when the supervisor is still alive", async () => {

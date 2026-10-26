@@ -35,6 +35,15 @@ export type { GoogleOptions } from "./api/google-generative-ai.ts";
 export type { GoogleApiThinkingLevel, ResolvedGoogleThinkingLevel } from "./api/google-shared.ts";
 export type { GoogleVertexOptions } from "./api/google-vertex.ts";
 export * from "./api/lazy.ts";
+export {
+	type AssistantProgress,
+	type AssistantRecord,
+	assistantRecords,
+	carryAssistantCapture,
+	getAssistantCapture,
+	isAssistantProgress,
+	subscribeAssistantCapture,
+} from "./utils/assistant-capture.ts";
 export type { MistralOptions } from "./api/mistral-conversations.ts";
 export type {
 	ChatGptSubscriptionWebSocketDebugStats,
@@ -96,6 +105,7 @@ export * from "./endpoint-reasoning-efforts.ts";
 export * from "./env-api-keys.ts";
 export * from "./legacy-provider-ids.ts";
 export { modelSupportsAssistantPrefill } from "./model.ts";
+export * from "./model-cost.ts";
 export * from "./models.ts";
 export * from "./models-store.ts";
 export { supportsAllowedToolChoice } from "./openai-responses-compat.ts";
